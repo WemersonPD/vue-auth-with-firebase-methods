@@ -45,6 +45,20 @@
             >
             Google Redirect
             </b-button>
+            
+          </div>
+
+          <div class="mt-3">
+            <b-button type="button" variant="primary" @click="siginInWithFacebookPopup()">Facebook Popup</b-button>
+            <b-button 
+              class="ml-2"
+              type="button"
+              variant="primary"
+              @click="siginInWithFacebookRedirect()"
+            >
+            Facebook Redirect
+            </b-button>
+            
           </div>
 
         </b-form>
@@ -61,14 +75,13 @@
     getAuth, 
     
     GoogleAuthProvider,
+    FacebookAuthProvider,
+
     signInWithPopup,
     signInWithRedirect,
     /*getRedirectResult,*/
     
-    FacebookAuthProvider,
-    
     signOut,
-
   } from  'firebase/auth'
 
   export default {
@@ -94,13 +107,16 @@
         const provider = new GoogleAuthProvider()
         // Link from google scopes: https://developers.google.com/identity/protocols/oauth2/scopes
         // provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
-        const auth = getAuth();
 
         // Facebook
         const facebookProvider = new FacebookAuthProvider();
         // Link from facebook scopes: https://developers.facebook.com/docs/permissions/reference
-        facebookProvider.addScope('user_birthday');
+        // facebookProvider.addScope('user_birthday');
         
+        const auth = getAuth();
+        // Optional config language
+        // auth.languageCode = 'it';
+
         return {
           provider,
           auth,
@@ -138,9 +154,46 @@
           .then(() => console.log("Logout success!!"))
           .catch((error) => console.log("Error in logout", error))
       },
-      siginInWithFacebook() {
+      async siginInWithFacebookPopup() {
+        const { auth, facebookProvider } = this.firebaseConfigs();
 
-      }
+        let result;
+        try {
+          result = await signInWithPopup(auth, facebookProvider);
+        } catch(error) {
+          // Error on load local, beacuse the facebook block connection unused https.
+          console.log("Error in sign-in with facebook popup", error)
+        }
+
+        console.log("Success in signin with facebook popup", result);
+        // This gives you a Facebook Access Token. You can use it to access the Facebook API.
+        // const credential = FacebookAuthProvider.credentialFromResult(result);
+        // const accessToken = credential.accessToken;
+      },
+      async siginInWithFacebookRedirect() {
+        const { auth, facebookProvider } = this.firebaseConfigs();
+
+        let redirect;
+        try {
+          redirect = await signInWithRedirect(auth, facebookProvider);
+        } catch(error) {
+          // Error on load local, beacuse the facebook block connection unused https.
+          console.log("Error in sign-in with facebook redirect", error)
+        }
+
+        console.log("Success in sign-in with facebook redirect", redirect);
+
+        // let result;
+        // try {
+        //   result = await getRedirectResult(auth)
+        // } catch(error) {
+        //   console.log("Error in get result from redirect facebook")
+        // }
+
+        // This gives you a Facebook Access Token. You can use it to access the Facebook API.
+        // const credential = FacebookAuthProvider.credentialFromResult(result);
+        // const accessToken = credential.accessToken;
+      },
 
     }
   }
