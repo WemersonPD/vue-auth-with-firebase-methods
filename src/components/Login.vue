@@ -126,10 +126,29 @@
       // Should be async/await rather than .then/.catch()
       signInWithGooglePopup() {
         const { auth, provider } = this.firebaseConfigs();
-        signInWithPopup(auth, provider).then(
-          (success) => { console.log("success", success) },
-          (error) => { console.log("Error", error) }
-        )
+        signInWithPopup(auth, provider)
+          .then((result) => {
+            console.log("Error in signin popup with google", result)
+            // This gives you a Google Access Token. You can use it to access the Google API.
+            // const credential = GoogleAuthProvider.credentialFromResult(result);
+            // const token = credential.accessToken;
+
+            // The signed-in user info.
+            // const user = result.user;
+          })
+          .catch((error) => {
+            console.log("Error in signin popup with google",error)
+
+            // Handle Errors here.
+            // const errorCode = error.code;
+            
+            // const errorMessage = error.message;
+            // The email of the user's account used.
+            // const email = error.email;
+
+            // The AuthCredential type that was used.
+            // const credential = GoogleAuthProvider.credentialFromError(error);
+          });
       },
       // Example with async/await
       async signInWithGoogleRedirect() {
@@ -147,12 +166,6 @@
         //   console.log("Error in get redirect result", error);
         // }
         // const credentials = GoogleAuthProvider.credentialFromResult(result);
-      },
-      logoutFormAllSocialMedias() {
-        const { auth } = this.firebaseConfigs();
-        signOut(auth)
-          .then(() => console.log("Logout success!!"))
-          .catch((error) => console.log("Error in logout", error))
       },
       async siginInWithFacebookPopup() {
         const { auth, facebookProvider } = this.firebaseConfigs();
@@ -193,6 +206,12 @@
         // This gives you a Facebook Access Token. You can use it to access the Facebook API.
         // const credential = FacebookAuthProvider.credentialFromResult(result);
         // const accessToken = credential.accessToken;
+      },
+      logoutFormAllSocialMedias() {
+        const { auth } = this.firebaseConfigs();
+        signOut(auth)
+          .then(() => console.log("Logout success!!"))
+          .catch((error) => console.log("Error in logout", error))
       },
 
     }
